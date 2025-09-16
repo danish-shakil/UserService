@@ -29,10 +29,10 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Object> handleUserNotFound(UserAlreadyExistsException ex) {
         Map<String, Object> response = new LinkedHashMap<>();
         response.put("TimeStamp", LocalDateTime.now());
-        response.put("Status", HttpStatus.NOT_FOUND.value());
+        response.put("Status", HttpStatus.CONFLICT.value());
         response.put("Error", "User already exists");
         response.put("Message", ex.getMessage());
 
-        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(response, HttpStatus.CONFLICT);
     }
 }

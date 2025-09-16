@@ -3,6 +3,7 @@ package com.demo.UserService.controller;
 import com.demo.UserService.exception.UserAlreadyExistsException;
 import com.demo.UserService.exception.UserNotFoundException;
 import com.demo.UserService.model.User;
+import com.demo.UserService.service.UserService;
 import com.demo.UserService.userRepository.UserRepo;
 import com.demo.UserService.userRequests.UserDTO;
 import com.demo.UserService.userResponse.UserResponseDTO;
@@ -16,9 +17,11 @@ import java.util.List;
 public class UserController {
 
     private final UserRepo userRepository;
+    private final UserService userService;
 
-    public UserController(UserRepo userRepository) {
+    public UserController(UserRepo userRepository, UserService userService) {
         this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     @GetMapping("/home")
@@ -37,13 +40,7 @@ public class UserController {
         if (userRepository.findByUsername(userDTO.getUsername()).isPresent()) {
             throw new UserAlreadyExistsException("UserName "+userDTO.getUsername()+ " already exists");
         }
-
-        // You can hash the password here if needed (e.g., BCrypt)
-        User user = new User();
-        user.setUsername(userDTO.getUsername());
-        user.setPassword(userDTO.getPassword());
-
-        userRepository.save(user);
+        User user = userService.register(userDTO);
         return ResponseEntity.ok("User registered successfully.");
     }
 
